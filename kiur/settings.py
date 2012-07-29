@@ -4,7 +4,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+     ('Kaspar Bumke', 'kaspar.bumke@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -53,7 +53,7 @@ MEDIA_ROOT = '/home/kaspar/kiur/django/kiur/media/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = 'localhost:8000/media/'
+MEDIA_URL = 'media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -109,7 +109,20 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+		"/home/kaspar/kiur/django/kiur/templates/"
 )
+#easy-thumbnails config
+#THUMBNAIL_ALIASES = {
+#	"libmods": {
+#		"search": {"size": (50,50), "default":"static/placeholder.png"}
+#		}
+#}
+
+
+#haystack config
+HAYSTACK_SITECONF = 'kiur.search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = '/home/kaspar/kiur/django/kiur/whoosh_index'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -122,7 +135,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-		"libmods"
+		"libmods",
+		"haystack",
+		"easy_thumbnails",
 )
 
 # A sample logging configuration. The only tangible logging

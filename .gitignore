@@ -1,5 +1,8 @@
+media/*/*
+whoosh_index
+!media/static/*
+*.swp
 *.py[cod]
-
 # C extensions
 #*.so
 

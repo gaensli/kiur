@@ -1,0 +1,46 @@
+{% load thumbnail %}
+<html>
+	<head> 
+		<title>KiUR - KiCad EDA User Repository</title>
+	</head>
+	<body>
+<center>
+		<h1>KiUR - KiCad EDA User Repository</h1>
+<table border=1>
+	<tr>
+		<td>
+			<h3> Components (.lib) </h3>
+		</td>
+		<td>
+			<h3> Footprints (.mod) </h3>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			{% if latest_components %}
+			<ul>
+				{% for component in latest_components %}
+				<li><a href="/components/{{ component.name|iriencode }}/"><img src="{% thumbnail component.image|default:"static/placeholder.png" 50x50 %}" alt="" ></a>{{ component.name }}</a></li>
+				{% endfor %}
+			</ul>
+			{% else %}
+			<p>No components available.</p>
+			{% endif %}
+		</td>
+		<td>
+			{% if latest_footprints %}
+			<ul>
+				{% for footprint in latest_footprints %}
+				<li><a href="/footprints/{{ footprint.name|iriencode }}/">{{ footprint.name }}</a></li>
+				{% endfor %}
+			</ul>
+			{% else %}
+			<p>No footprints available.</p>
+			{% endif %}
+		</td>
+	</tr>
+</table>
+</center>
+</body>
+</html>
+<!-- vim: set ft=htmldjango.python : -->
