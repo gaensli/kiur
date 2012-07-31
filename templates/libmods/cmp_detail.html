@@ -1,0 +1,20 @@
+<html>
+	<head> 
+		<title>KiUR - {{ component.name }}</title>
+	</head>
+	<body>
+		{% load thumbnail %}
+		<div id="lib_detail" style="width:1000">
+			<div id="lib_img" style="float:left;">
+				{% if not component.image %}
+					<img src="{% thumbnail "static/placeholder.png" 300x300 %}" alt="" />
+				{% else %}
+					<a href="{{ component.image.url }}" >
+						<img src="{% thumbnail component.image 300x300 %}" alt="" />
+					</a>
+				{% endif %}
+			</div>
+		</div>
+	</body>
+</html>
+<!-- vim: set ft=htmldjango.html : -->

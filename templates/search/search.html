@@ -18,7 +18,8 @@
 
             {% for result in page.object_list %}
                 <p>
-                    <a href="../components/{{result.object.name|iriencode }}">{{ result.object.name }}</a>
+								{{ result.object.name }}
+								{#<a href="../components/{{result.object.name|iriencode }}">{{ result.object.name }}</a>#}
                 </p>
             {% empty %}
                 <p>No results found.</p>
@@ -36,4 +37,4 @@
         {% endif %}
     </form>
 {% endblock %}
-<!-- vim: set ft=htmldjango.python : -->
+{# vim: set ft=htmldjango.html : #} 

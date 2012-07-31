@@ -1,0 +1,72 @@
+{% load thumbnail %}
+<html>
+	<head> 
+		<title>KiUR - KiCad EDA User Repository</title>
+	</head>
+	<body>
+		<center>
+			<h1>KiUR - KiCad EDA User Repository</h1>
+		</center>
+			<div class="libmod" id="components" style="float:left">
+				<h3> Components (.lib) </h3>
+				<table class="result" id="components" border=1>
+					<thead class="result">
+						<tr>
+							<td>
+							</td>
+							<td>
+								Name
+							</td>
+						</tr>
+					</thead>
+					<tbody>
+						{% if latest_components %}
+						{% for component in latest_components %}
+						<tr class="result">
+							<td class="thumb">
+								<a href="libs/components/{{ component.name|iriencode }}/"><img src="{% thumbnail component.image|default:"static/placeholder.png" 50x50 %}" alt="" /></a>
+							</td>
+							<td class="name">
+								<a href="libs/components/{{ component.name|iriencode }}/">{{ component.name }}</a>
+							</td>
+						</tr>
+						{% endfor %}
+						{% else %}
+						<p>No components available.</p>
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+			<div class="libmod" id="footprints" style="float:right">
+				<h3> Footprints (.mod) </h3>
+				<table class="result" id="footprints" border=1>
+					<thead class="result">
+						<tr>
+							<td>
+							</td>
+							<td>
+								Name
+							</td>
+						</tr>
+					</thead>
+					<tbody>
+						{% if latest_footprints %}
+						{% for footprint in latest_footprints %}
+						<tr class="result">
+							<td class="thumb">
+								<a href="libs/footprints/{{ footprint.name|iriencode }}/"><img src="{% thumbnail footprint.image|default:"static/placeholder.png" 50x50 %}" alt="" /></a>
+							</td>
+							<td class="name">
+								<a href="libs/footprints/{{ footprint.name|iriencode }}/">{{ footprint.name }}</a>
+							</td>
+						</tr>
+						{% endfor %}
+						{% else %}
+						<p>No footprints available.</p>
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+	</body>
+</html>
+<!-- vim: set ft=htmldjango.python : -->
