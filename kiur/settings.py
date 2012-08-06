@@ -111,13 +111,10 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 		"/home/kaspar/kiur/django/kiur/templates/"
 )
-#easy-thumbnails config
-#THUMBNAIL_ALIASES = {
-#	"libmods": {
-#		"search": {"size": (50,50), "default":"static/placeholder.png"}
-#		}
-#}
 
+AUTH_PROFILE_MODULE = "kiur.UserProfile"
+
+LOGIN_URL = "/login"
 
 #haystack config
 HAYSTACK_SITECONF = 'kiur.search_sites'
@@ -138,8 +135,10 @@ INSTALLED_APPS = (
 		#extra installed apps
 		"haystack", #search app
 		"easy_thumbnails", 
+		"cart",
 		#own apps
 		"libmods",
+		"tools",
 )
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

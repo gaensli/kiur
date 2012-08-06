@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load libmods_extras %}
+{% load highlight %}
+
+{% block title %}
+{% if query %}
+{{ query }} - 
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<h3>Results</h3>
+{{ models }}
+<table border=1>
+{% for result in page.object_list %}
+	<tr>
+		<td>
+			{% if result.object|to_class_name == "Component" %}
+			<form method="post" action="?q={{ query }}&amp;models={{ models }}&amp;addcp={{result.object.name|iriencode}}">
+			{% else %}
+			<form method="post" action="?q={{ query }}&amp;models={{ models }}&amp;addfp={{result.object.name|iriencode}}">
+			{% endif %}
+				{% csrf_token %}
+				<input type="checkbox" {% if result.object in basket %} checked {% endif %} onclick="this.form.submit();"/>
+			</form>
+
+		</td>
+		<td>
+			{% if result.object|to_class_name == "Component" %}
+			<a href="/components/{{result.object.name|iriencode }}">{{result.object.name}}</a>
+			{% else %}
+			<a href="/footprints/{{result.object.name|iriencode }}">{{result.object.name}}</a>
+			{% endif %}
+		</td>
+	</tr>
+{% empty %}
+<p>No results found.</p>
+{% endfor %}
+<table>
+
+{% if page.has_previous or page.has_next %}
+<div>
+	{% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+	|
+	{% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}
+{# vim: set ft=htmldjango.html : #} 

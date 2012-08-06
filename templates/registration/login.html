@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="top-spacer"></div>
+<div id="middle">
+	<form action="/login/" method="post">
+		<div style="text-align:center;">
+			<p>&nbsp;
+		{% if next %}
+			{% if next == "/submit/" %}
+			You need to login to submit components and footprints.			{% endif %}
+			<input type="hidden" name="next" value="{{ next }}" />
+			{% else %}
+			<input type="hidden" name="next" value="/" />
+			{% endif %}
+			&nbsp;</p>
+		</div>
+		<table align="center" valign="middle" style="border-collapse:seperate;border-spacing:10px;">
+			<tr>
+				<td>
+					username:
+				</td>
+				<td>
+					<input type="text" name="username" value="{{ username}}" /><br />
+				</td>
+			</tr>
+				<td>
+					password:
+				</td>
+				<td>
+					<input type="password" name="password" value="" /><br />
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td align="right">
+				{% csrf_token %}
+				<input type="submit" value="Log In" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td>
+					<a href="/register/">register</a>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+{% endblock %}
+
+{# vim: set ft=htmldjango.html :#}

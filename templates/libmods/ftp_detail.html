@@ -3,11 +3,11 @@
 {% block content %}
 <div id="lib_detail" style="width:1000">
 	<div id="lib_img" style="float:left;">
-		{% if not component.image %}
+		{% if not footprint.image %}
 		<img src="{% thumbnail "static/placeholder.png" 300x300 %}" alt="" />
 		{% else %}
-		<a href="{{ component.image.url }}" >
-			<img src="{% thumbnail component.image 300x300 %}" alt="" />
+		<a href="{{ footprint.image.url }}" >
+			<img src="{% thumbnail footprint.image 300x300 %}" alt="" />
 		</a>
 		{% endif %}
 	</div>

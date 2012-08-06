@@ -1,39 +1,85 @@
-#from django.shortcuts import render_to_response
-#from django.template.context import RequestContext
-#from libmods.models import Footprint, Component
-#
-#def index(request):
-#	fp = Footprint.objects.all().order_by("-date_added")[:5]
-#	cp = Component.objects.all().order_by("-date_added")[:5]
-#	return render_to_response("index.html", context_instance=RequestContext(request, {"latest_footprints":fp, "latest_components":cp}))
+from django.shortcuts import render_to_response, get_object_or_404
+from django.template.context import RequestContext
+from django.http import HttpResponseRedirect
+
+from django.contrib.auth.decorators import login_required
 from haystack.views import SearchView, search_view_factory
 from haystack.query import SearchQuerySet 
-from haystack.forms import HighlightedModelSearchForm
+#from haystack.forms import HighlightedModelSearchForm, ModelSearchForm, FacetedSearchForm
 from kiur.haystack_forms import CustomSearchForm
+from django.contrib.auth.views import login as djlogin
+from libmods.models import Component, Footprint
 
-def SearchWithRequest(request):
-	sqs = SearchQuerySet().filter(content_auto=request.GET.get('q', ''))
-	#sqs = SearchQuerySet().autocomplete(name_auto='tes')
-	#sqs = SearchQuerySet().filter(code__startswith=request.GET.get('q', ''))
-	view = search_view_factory(
-		view_class=SearchView,
-		template='index.html',
-		searchqueryset=sqs,
-		#form_class=CustomSearchForm
-		form_class=HighlightedModelSearchForm
-		)
-	return view(request)
+def get_session_form(request):
+	try:
+		form = CustomSearchForm(request.session["last_get"])
+	except KeyError:
+		form = CustomSearchForm()
+	return form
 
-#class SearchWithRequest(SearchView):
-#	def __name__(self):
-#		return "SearchWithRequest"
-#
-#	def build_form(self, form_kwargs=None):
-#		if form_kwargs is None:
-#			form_kwargs = {}
-#
-#		if self.searchqueryset is None:
-#			sqs = SearchQuerySet().filter(name_auto=self.request.GET.get('q', ''))
-#			form_kwargs["searchqueryset"] = sqs
-#
-#		return super(SearchWithRequest, self).build_form(form_kwargs)
+def get_session_basket(request):
+	try:
+		basket = request.session["basket"]
+	except KeyError:
+		basket = []
+	return basket
+
+def get_session_context(request):
+	form = get_session_form(request)
+	basket = get_session_basket(request)
+	return {"form": form, "basket": basket}
+
+def index(request):
+	form = CustomSearchForm()
+	basket = get_session_basket(request)
+	return render_to_response("index.html", context_instance=RequestContext(request, {"form": form, "basket": basket}))
+
+def add_to_basket(request, libmod):
+	basket = get_session_basket(request)
+	if libmod in basket:
+		basket.remove(libmod)
+	else:
+		basket.append(libmod)
+	#uniquify just to be sure
+	basket = list(set(basket))
+	request.session["basket"] = basket
+
+class CustomSearchView(SearchView):
+	def __name__(self):
+		return "CustomSearchView"
+	
+	def extra_context(self):
+		extra = super(CustomSearchView, self).extra_context()
+		extra["models"] = self.request.GET.get("models", "")
+		extra["basket"] = get_session_basket(self.request)
+		return extra
+
+def search(request):
+	if request.POST:
+		if "addcp" in request.GET:
+			libmod = Component.objects.get(name=request.GET.get("addcp", ""))
+			add_to_basket(request, libmod)
+		elif "addfp" in request.GET:
+			libmod = Footprint.objects.get(name=request.GET.get("addfp", ""))
+			add_to_basket(request, libmod)
+		return HttpResponseRedirect("/search/?q=" + request.GET.get('q', '') + "&models=" +  request.GET.get("models", ""))
+	else:
+		request.session["last_get"] = request.GET
+		sqs = SearchQuerySet().filter(content_auto=request.GET.get('q', ''))
+		request.session["sqs"] = sqs
+		view = search_view_factory(
+			view_class=CustomSearchView,
+			template="search.html",
+			searchqueryset=sqs,
+			form_class=CustomSearchForm,
+			context_class=RequestContext,
+			)
+		return view(request)
+
+@login_required
+def submit(request):
+	return render_to_response("submit.html", context_instance=RequestContext(request, get_session_context(request)))
+
+def login(request):
+	return djlogin(request, extra_context=get_session_context(request))
+	

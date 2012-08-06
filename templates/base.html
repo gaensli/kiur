@@ -1,0 +1,65 @@
+{% load tools_extras %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<link rel="stylesheet" href="/media/static/style.css" />
+	<title>{% block title %}{% endblock %}KiUR</title>
+</head>
+<body>
+	<div id="topbar">
+		<div id="logo">
+				<a href="/">KiUR</a>
+		</div>
+		<div id="menu">
+			<span>&nbsp;&nbsp;&nbsp;</span>
+			<a href="/submit/" class="topbar-text">submit</a>
+			<span>&nbsp;&nbsp;&nbsp;</span>
+			{% if user.is_authenticated %}
+			<a href="/logout/">logout</a>
+			{% else %}
+			<a href="/login/">login</a>
+			{% endif %}
+			<span>&nbsp;&nbsp;&nbsp;</span>
+		</div>
+	</div>
+	{% if user.is_authenticated %}
+	<!--<div id="user-stuff">
+		<div id="profile">
+			<span class="smallfont">logged in as:</span>		
+			<a href="/profile/">{{ user.username }}</a>
+		</div> -->
+	</div>
+	{% endif %}
+	<div id="search-bar">
+	<table style="width:100%;">
+		<tr>
+	<td style="min-width:200px;">
+	{% render_basket %}
+	</td>
+	<td style="min-width:370px;vertical-align:middle;">
+		<form method="get" action="/search/">
+			<table>
+				<tr>
+					<td>
+						{{ form.q }}
+					</td>
+					<td>
+						{{ form.models }}
+					</td>
+					<td>
+						<input id="search" type="submit" value="search" name="submit">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</td>
+</tr>
+</table>
+	</div>
+	<div id="floater"></div>
+	<div id="content">
+		{% block content %}{% endblock %}
+	</div>
+</body>
+</html>
+{# vim: set ft=htmldjango.html :#}
