@@ -36,6 +36,9 @@ class CustomSearchForm(SearchForm):
 		for m in site.get_indexed_models():
 			choices.append(("%s.%s" % (m._meta.app_label, m._meta.module_name), smart_unicode(m._meta.verbose_name_plural)))
 			self.all_choices.append("%s.%s" % (m._meta.app_label, m._meta.module_name))
+		#I want these in component then footprint order
+		choices.sort()
+		choices.reverse()
 		choices.append(("", "everything"))
 		return reversed(choices)
 
