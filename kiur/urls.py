@@ -35,7 +35,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login/$', "kiur.views.login"),
     url(r'^logout/$', "django.contrib.auth.views.logout"),
-		url(r"submit/$", "kiur.views.submit"), 
+
+		url(r"submit/(?P<step>\d)/$", "libmods.views.submit"), 
 
 
 		#url(r"^libs/", include("libmods.urls")),

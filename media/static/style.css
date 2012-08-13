@@ -81,6 +81,9 @@ body {
 #id_models {
 	font-size:18px;
 }
+div#inner-content {
+	width:70%;margin-left:auto; margin-right:auto;
+}
 #content {
 	position:relative; clear:left;
 	height:500px; width:90%; max-width:800px; min-width:400px;

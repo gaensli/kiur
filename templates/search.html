@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load libmods_extras %}
 {% load highlight %}
+{% load thumbnail %}
 
 {% block title %}
 {% if query %}
@@ -23,15 +24,26 @@
 				{% csrf_token %}
 				<input type="checkbox" {% if result.object in basket %} checked {% endif %} onclick="this.form.submit();"/>
 			</form>
-
 		</td>
 		<td>
 			{% if result.object|to_class_name == "Component" %}
-			<a href="/components/{{result.object.name|iriencode }}">{{result.object.name}}</a>
+			<a href="/components/{{ result.object.name|iriencode }}">
 			{% else %}
-			<a href="/footprints/{{result.object.name|iriencode }}">{{result.object.name}}</a>
+			<a href="/footprints/{{ result.object.name|iriencode }}">
+			{% endif %}
+				<img src="{% thumbnail component.image|default:"static/placeholder.png" 30x30 %}" alt="{{ result.object.name }} thumbnail" /></a>
+		</td>
+		<td>
+			{% if result.object|to_class_name == "Component" %}
+			<a href="/components/{{ result.object.name|iriencode }}">{{ result.object.name }}</a>
+			{% else %}
+			<a href="/footprints/{{ result.object.name|iriencode }}">{{ result.object.name }}</a>
 			{% endif %}
 		</td>
+		<td>
+			{{ result.object.description }}
+		</td>
+
 	</tr>
 {% empty %}
 <p>No results found.</p>

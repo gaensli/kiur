@@ -1,10 +1,15 @@
-{% block title %}
-Submit
-{% endblock %}
+{% extends "base.html" %}
 
 {% block content %}
-    <section>
-        <h2>Welcome, {{ user.username }}</h2>
-        <p>Submit...</p>
-    </section>
+<div id="top-spacer"></div>
+<div id="inner-content"> 
+	<p>{{ error_message|escape }}</p>
+	<p>
+<form enctype="multipart/form-data" method="POST" action="{{ redirect }}" >
+{{ upload_form }}
+{% csrf_token %}
+<input type="submit" value="upload" />
+</form>
+</p>
+</div>
 {% endblock %}

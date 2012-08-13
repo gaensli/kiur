@@ -1,9 +1,9 @@
 import datetime
-from haystack.indexes import *
+from haystack.indexes import RealTimeSearchIndex 
 from haystack import site, indexes
 from libmods.models import Component, Footprint
 
-class LibModIndex(SearchIndex):
+class LibModIndex(RealTimeSearchIndex):
 	#the templates are templates/search/indexes/libmods/component_content_auto.txt
 	#and footprint_content_auto.txt
 	content_auto = indexes.EdgeNgramField(document=True, use_template=True)

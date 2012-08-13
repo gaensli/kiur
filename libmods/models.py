@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import encoding
+from django.contrib.auth.models import User
 
 from easy_thumbnails.signals import saved_file
 from easy_thumbnails.signal_handlers import generate_aliases_global
@@ -22,9 +23,11 @@ class LibMod(models.Model):
 		return self.name
 
 class Footprint(LibMod):
-	pass
+	submitter = models.ForeignKey(User, related_name="fp_submitter")
+	maintainer = models.ForeignKey(User, related_name="fp_maintainer")
 
 class Component(LibMod):
+	submitter = models.ForeignKey(User, related_name="cp_submitter")
+	maintainer = models.ForeignKey(User, related_name="cp_maintainer")
 	footprints = models.ManyToManyField(Footprint, null=True, blank=True)
 	
-

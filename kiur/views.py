@@ -1,8 +1,7 @@
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template.context import RequestContext
 from django.http import HttpResponseRedirect
 
-from django.contrib.auth.decorators import login_required
 from haystack.views import SearchView, search_view_factory
 from haystack.query import SearchQuerySet 
 #from haystack.forms import HighlightedModelSearchForm, ModelSearchForm, FacetedSearchForm
@@ -32,7 +31,7 @@ def get_session_context(request):
 def index(request):
 	form = CustomSearchForm()
 	basket = get_session_basket(request)
-	return render_to_response("index.html", context_instance=RequestContext(request, {"form": form, "basket": basket}))
+	return render(request, "index.html", {"form": form, "basket": basket})
 
 def add_to_basket(request, libmod):
 	basket = get_session_basket(request)
@@ -75,10 +74,6 @@ def search(request):
 			context_class=RequestContext,
 			)
 		return view(request)
-
-@login_required
-def submit(request):
-	return render_to_response("submit.html", context_instance=RequestContext(request, get_session_context(request)))
 
 def login(request):
 	return djlogin(request, extra_context=get_session_context(request))
