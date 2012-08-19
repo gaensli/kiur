@@ -26,7 +26,8 @@ def get_session_basket(request):
 def get_session_context(request):
 	form = get_session_form(request)
 	basket = get_session_basket(request)
-	return {"form": form, "basket": basket}
+	user = request.user;
+	return {"form": form, "basket": basket, "user":user}
 
 def index(request):
 	form = CustomSearchForm()

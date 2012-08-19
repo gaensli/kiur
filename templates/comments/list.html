@@ -1,0 +1,15 @@
+<dl id="comments">
+  {% for comment in comment_list %}
+    <dt id="c{{ comment.id }}">
+		<a href="/user/{{ comment.name|iriencode }}">{{ comment.name }}</a>
+		{% if comment.report_problem %} reported a problem 
+		{% else %} commented 
+		{% endif %} 
+		on {{ comment.submit_date }}:
+    </dt>
+    <dd>
+        <p>{{ comment.comment }}</p>
+    </dd>
+  {% endfor %}
+</dl>
+{# vim: set ft=htmldjango.html #}

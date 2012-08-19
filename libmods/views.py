@@ -16,11 +16,13 @@ from libmods.forms import UploadFormOne, UploadFormLib, UploadFormDcm, UploadFor
 def cmp_detail(request, url_cmp_name):
 	extra_context = get_session_context(request)
 	extra_context["component"] = get_object_or_404(Component, name=unquote(url_cmp_name))
+	extra_context["next"] = "/components/" + url_cmp_name + "/"
 	return render(request, "libmods/cmp_detail.html", extra_context)
 
 def ftp_detail(request, url_ftp_name):
 	extra_context = get_session_context(request)
 	extra_context["footprint"] = get_object_or_404(Footprint, name=unquote(url_ftp_name))
+	extra_context["next"] = "/components/" + url_ftp_name + "/"
 	return render(request, "libmods/ftp_detail.html", extra_context)
 
 @login_required

@@ -1,8 +1,15 @@
 {% extends "base.html" %}
+{% block title %}
+{{ component.name }} - 
+{% endblock %}
 {% load thumbnail %}
+{% load comments %}
 {% block content %}
-<div id="lib_detail" style="width:1000">
-	<div id="lib_img" style="float:left;">
+<div id="top-spacer" style="height:40px;"></div>
+<div id="lib_detail" style="width:100%;">
+	<div id="lib_name" style="width:100%;font-size:27pt; font-weight:bold;margin-bottom;">{{ component.name }}</div>
+	<div id="lib_description" style="float:left;width:100%;margin-bottom:30px;">{{ component.description }}</div>
+	<div id="lib_img" style="float:left;border: 1px solid grey;">
 		{% if not component.image %}
 		<img src="{% thumbnail "static/placeholder.png" 300x300 %}" alt="" />
 		{% else %}
@@ -11,7 +18,14 @@
 		</a>
 		{% endif %}
 	</div>
-	<div id="lib_name">{{ component.name }} </div>
+</div>
+<div style="width:100%;float:left;">
+	{% render_comment_list for component %}
+	{% if user.is_authenticated %}
+	{% render_comment_form for component %}
+	{% else %}
+	You need to <a href="/login/?next=/components/{{ component.name|iriencode }}"> login </a> to post comments.
+	{% endif %}
 </div>
 {% endblock %}
 {# vim: set ft=htmldjango.html : #}

@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 
 from easy_thumbnails.signals import saved_file
 from easy_thumbnails.signal_handlers import generate_aliases_global
-
 saved_file.connect(generate_aliases_global)
+
+from custom_comments.models import CommentWithFlag
+from django.contrib.contenttypes import generic
 
 class LibMod(models.Model):
 	name = models.CharField(max_length=200)
@@ -17,6 +19,9 @@ class LibMod(models.Model):
 	ki_text = models.TextField()
 	part_of_ki = models.BooleanField()
 	votes = models.IntegerField()
+	problems_reported = generic.GenericRelation(CommentWithFlag, 
+	                                            content_type_field="problem_object_type", 
+																							object_id_field="problem_object_id")
 	class Meta:
 		abstract = True
 	def __unicode__(self):
@@ -31,3 +36,12 @@ class Component(LibMod):
 	maintainer = models.ForeignKey(User, related_name="cp_maintainer")
 	footprints = models.ManyToManyField(Footprint, null=True, blank=True)
 	
+
+from django.contrib.comments.signals import comment_was_posted
+from django.dispatch import receiver
+
+@receiver(comment_was_posted)
+def comment_posted_callback(sender, comment, **kwargs):
+	if comment.report_problem:# and (comment.content_object.problem_reported is None):
+		comment.problem_object = comment.content_object
+		comment.save()

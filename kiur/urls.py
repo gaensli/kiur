@@ -17,6 +17,7 @@ urlpatterns = patterns('',
 		url(r"^$", "kiur.views.index"),
 		#url(r'^search/$', include('haystack.urls')),
 		url(r"^search/$", "kiur.views.search"),
+    (r'^comments/', include('django.contrib.comments.urls')),
 		
 		#url(r"^(?P<libmod_type>components)/$",  "kiur.views.SearchWithRequest",name='haystack_search'),
 		#url(r"^(?P<libmod_type>footprints)/$",  "kiur.views.SearchWithRequest",name='haystack_search'),
