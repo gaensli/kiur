@@ -43,7 +43,7 @@ body {
 
 #search-bar {
 	background: #282c27;
-	min-height: 87px;
+	min-height: 72px;
 	font-size: small;
 	color: white;
 }
@@ -121,8 +121,8 @@ div#inner-content {
 }
 .basket-icon { 
 		display: table-cell;
-		height: 48px;
-		width: 48px;
+		height: 35px;
+		width: 35px;
 		text-align: center;
 		vertical-align: middle;
 		text-decoration:none;
