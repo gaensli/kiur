@@ -9,15 +9,34 @@
 {% endif %}
 {% endblock %}
 
+
 {% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+			console.log("javascript!");
+		$("#add_to_basket").submit(function(e) {
+			console.log("woooo!");
+			$.ajax({
+				type:"POST",
+				url:"/test_basket/"
+			});
+			return false;
+		});
+	});
+</script>
 <h3>Results</h3>
+<form id="add_to_basket">
+	<input type="checkbox"/>
+	<input type="submit"/>
+</form>
 {{ models }}
 <table border=1>
 {% for result in page.object_list %}
 	<tr>
 		<td>
 			{% if result.object|to_class_name == "Component" %}
-			<form method="post" action="?q={{ query }}&amp;models={{ models }}&amp;addcp={{result.object.name|iriencode}}">
+			{# <form method="post" action="?q={{ query }}&amp;models={{ models }}&amp;addcp={{result.object.name|iriencode}}"> #}
+			<form method="post" >
 			{% else %}
 			<form method="post" action="?q={{ query }}&amp;models={{ models }}&amp;addfp={{result.object.name|iriencode}}">
 			{% endif %}

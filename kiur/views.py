@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.context import RequestContext
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 
 from haystack.views import SearchView, search_view_factory
 from haystack.query import SearchQuerySet 
@@ -53,6 +54,15 @@ class CustomSearchView(SearchView):
 		extra["models"] = self.request.GET.get("models", "")
 		extra["basket"] = get_session_basket(self.request)
 		return extra
+
+def test_basket(request):
+	print "hello"
+	print request.is_ajax()
+	if request.is_ajax():
+		message = "Hello AJAX"
+	else:
+		message = "Hello"
+	return HttpResponse(message)
 
 def search(request):
 	if request.POST:
