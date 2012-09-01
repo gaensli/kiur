@@ -18,3 +18,5 @@ class UploadFormMod(forms.Form):
 class UploadFormWrl(forms.Form):
 	mod = forms.FileField()
 	dcm = forms.CharField()
+
+

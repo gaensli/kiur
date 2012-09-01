@@ -13,35 +13,63 @@
 {% block content %}
 <script type="text/javascript">
 	$(document).ready(function() {
-			console.log("javascript!");
-		$("#add_to_basket").submit(function(e) {
-			console.log("woooo!");
+		//get the basket in case of back/forward button
+		$.ajax({
+			type:"GET",
+			url:"/modify_basket/",
+			success: function(response) {
+				if (response.success) {
+					$("#component-icon").html(response.libs);
+					$("#footprint-icon").html(response.mods);
+				}
+				else {
+					alert("A database problem occured querying the basket! Please contact the administrator.");
+				}
+			}});
+		//modify basket on toggle buttons
+		$(".modify_basket").submit(function(e) {
+			var dataString = $(this).serialize();
 			$.ajax({
 				type:"POST",
-				url:"/test_basket/"
+				url:"/modify_basket/",
+				data:dataString,
+				success: function(response) {
+					console.log(response.name);
+					if (response.success) {
+						$("#component-icon").html(response.libs);
+						$("#footprint-icon").html(response.mods);
+						//should really make sure it's toggled the right way
+						//$(".modify_basket").find("input[value='"+response.name+"']").each( function() {
+						//	if($(this).parent().find("input[value='"+response._type+"']")){
+						//		$(this).prop("checked", response.in_basket);
+						//	}
+						//		});
+					}	
+					else {
+						alert("A database problem occured changing the basket! Please contact the administrator.");
+					}
+				}
 			});
 			return false;
 		});
 	});
 </script>
 <h3>Results</h3>
-<form id="add_to_basket">
-	<input type="checkbox"/>
-	<input type="submit"/>
+<form method="post" action="/modify_basket/" class="modify_basket">
+	{% csrf_token %}
+	<input type="text" name="test" />
+	<input type="checkbox" onclick="$(this).closest('form').submit();"/>
 </form>
 {{ models }}
 <table border=1>
 {% for result in page.object_list %}
 	<tr>
 		<td>
-			{% if result.object|to_class_name == "Component" %}
-			{# <form method="post" action="?q={{ query }}&amp;models={{ models }}&amp;addcp={{result.object.name|iriencode}}"> #}
-			<form method="post" >
-			{% else %}
-			<form method="post" action="?q={{ query }}&amp;models={{ models }}&amp;addfp={{result.object.name|iriencode}}">
-			{% endif %}
+			 <form method="post" class="modify_basket" action="/modify_basket/"> 
+				 <input type="hidden" name="_type" value="{{ result.object|to_class_name }}" />
+				 <input type="hidden" name="libmod" value="{{ result.object.name }}" />
 				{% csrf_token %}
-				<input type="checkbox" {% if result.object in basket %} checked {% endif %} onclick="this.form.submit();"/>
+				<input type="checkbox" {% if result.object in basket %} checked {% endif %} onclick="$(this).closest('form').submit();"/>
 			</form>
 		</td>
 		<td>
@@ -71,9 +99,9 @@
 
 {% if page.has_previous or page.has_next %}
 <div>
-	{% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+	{% if page.has_previous %}<a href="?q={{ query }}&amp;models={{ models }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
 	|
-	{% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+	{% if page.has_next %}<a href="?q={{ query }}&amp;models={{ models }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
 </div>
 {% endif %}
 {% endblock %}

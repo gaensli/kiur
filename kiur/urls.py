@@ -43,7 +43,7 @@ urlpatterns = patterns('',
 		#url(r"^libs/", include("libmods.urls")),
 		url(r"^components/(?P<url_cmp_name>[\w\W]+)/$", "libmods.views.cmp_detail"),
 		url(r"^footprints/(?P<url_ftp_name>[\w\W]+)/$", "libmods.views.ftp_detail"),
-		url(r"^test_basket/$", "kiur.views.test_basket"),
+		url(r"^modify_basket/$", "kiur.views.modify_basket"),
 		#url(r"(?P<url_cmp_name>[\w|\W]+)/$", "cmp_detail"),
 
 )

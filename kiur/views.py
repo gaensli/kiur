@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.context import RequestContext
 from django.http import HttpResponseRedirect
+from django.http import HttpResponseNotAllowed
 from django.http import HttpResponse
 
 from haystack.views import SearchView, search_view_factory
@@ -9,6 +10,8 @@ from haystack.query import SearchQuerySet
 from kiur.haystack_forms import CustomSearchForm
 from django.contrib.auth.views import login as djlogin
 from libmods.models import Component, Footprint
+
+import json
 
 def get_session_form(request):
 	try:
@@ -35,7 +38,7 @@ def index(request):
 	basket = get_session_basket(request)
 	return render(request, "index.html", {"form": form, "basket": basket})
 
-def add_to_basket(request, libmod):
+def _modify_basket(request, libmod):
 	basket = get_session_basket(request)
 	if libmod in basket:
 		basket.remove(libmod)
@@ -55,36 +58,70 @@ class CustomSearchView(SearchView):
 		extra["basket"] = get_session_basket(self.request)
 		return extra
 
-def test_basket(request):
-	print "hello"
-	print request.is_ajax()
-	if request.is_ajax():
-		message = "Hello AJAX"
+def modify_basket(request):
+	if request.POST:
+		p = request.POST
+		try:
+			if p["_type"] == "Component":
+				libmod = Component.objects.get(name=p["libmod"])
+			elif p["_type"] == "Footprint":
+				libmod = Footprint.objects.get(name=p["libmod"])
+			else:
+				print p["_type"]
+				raise TypeError
+
+			_modify_basket(request, libmod)
+		except:
+			if request.is_ajax():
+				data = {"success":False}
+				return HttpResponse(json.dumps(data), mimetype="application/json")
+		if request.is_ajax():
+			basket = request.session["basket"]
+			data = {}
+			data["in_basket"] = libmod in basket
+			data["name"] = p["libmod"]
+			data["_type"] = p["_type"]
+			data["libs"] = len(filter(lambda x: type(x) is Component, basket))
+			data["mods"] = len(filter(lambda x: type(x) is Footprint, basket))
+			data["success"] = True
+			return HttpResponse(json.dumps(data), mimetype="application/json")
+		else:
+			try:
+				q = request.session["last_get"]["q"]
+			except:
+				q = ""
+			try:
+				models = request.session["last_get"]["models"]
+			except:
+				models = ""
+			try:
+				page = request.session["last_get"]["page"]
+			except:
+				page = "1"
+			return HttpResponseRedirect("/search/?q="+ q +"&models=" +  models + "&page=" + page)
 	else:
-		message = "Hello"
-	return HttpResponse(message)
+		print request.GET
+		if request.is_ajax():
+			basket = request.session["basket"]
+			data = {}
+			data["libs"] = len(filter(lambda x: type(x) is Component, basket))
+			data["mods"] = len(filter(lambda x: type(x) is Footprint, basket))
+			data["success"] = True
+			return HttpResponse(json.dumps(data), mimetype="application/json")
+		return HttpResponseNotAllowed(request)
 
 def search(request):
-	if request.POST:
-		if "addcp" in request.GET:
-			libmod = Component.objects.get(name=request.GET.get("addcp", ""))
-			add_to_basket(request, libmod)
-		elif "addfp" in request.GET:
-			libmod = Footprint.objects.get(name=request.GET.get("addfp", ""))
-			add_to_basket(request, libmod)
-		return HttpResponseRedirect("/search/?q=" + request.GET.get('q', '') + "&models=" +  request.GET.get("models", ""))
-	else:
-		request.session["last_get"] = request.GET
-		sqs = SearchQuerySet().filter(content_auto=request.GET.get('q', ''))
-		request.session["sqs"] = sqs
-		view = search_view_factory(
-			view_class=CustomSearchView,
-			template="search.html",
-			searchqueryset=sqs,
-			form_class=CustomSearchForm,
-			context_class=RequestContext,
-			)
-		return view(request)
+	request.session["last_get"] = request.GET
+	sqs = SearchQuerySet().filter(content_auto=request.GET.get('q', ''))
+	request.session["sqs"] = sqs
+	view = search_view_factory(
+		view_class=CustomSearchView,
+		template="search.html",
+		searchqueryset=sqs,
+		form_class=CustomSearchForm,
+		context_class=RequestContext,
+		)
+	return view(request)
 
 def login(request):
 	return djlogin(request, extra_context=get_session_context(request))
