@@ -22,6 +22,9 @@ class LibMod(models.Model):
 	problems_reported = generic.GenericRelation(CommentWithFlag, 
 	                                            content_type_field="problem_object_type", 
 																							object_id_field="problem_object_id")
+	def get_fields(self):
+		return [(field.name, field.value_to_string(self)) for field in self._meta.fields]
+
 	class Meta:
 		abstract = True
 	def __unicode__(self):

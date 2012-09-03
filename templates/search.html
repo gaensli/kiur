@@ -12,11 +12,6 @@
 
 {% block content %}
 <h3>Results</h3>
-<form method="post" action="/modify_basket/" class="modify_basket">
-	{% csrf_token %}
-	<input type="text" name="test" />
-	<input type="checkbox" onclick="$(this).closest('form').submit();"/>
-</form>
 {{ models }}
 <table border=1>
 {% for result in page.object_list %}
