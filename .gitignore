@@ -1,3 +1,4 @@
+kiur/secrets.py
 media/*/*
 whoosh_index
 !media/static/*

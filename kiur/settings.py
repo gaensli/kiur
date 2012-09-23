@@ -1,5 +1,7 @@
 # Django settings for kiur project.
 
+from secrets import DATABASES, SECRET_KEY
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -8,17 +10,6 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'kiur01',                      # Or path to database file if using sqlite3.
-        'USER': 'kiur',                      # Not used with sqlite3.
-        'PASSWORD': 'HorseNoodle',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -79,9 +70,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'mp76d!vxkga=dr4jbpov!of*gx-h+5iyg23%j0z@nq@*@(weo8'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
